@@ -34,8 +34,10 @@
   color-scheme: light;
 }
 
+/* 다크 팔레트. 아래 두 블록의 값은 항상 같게 유지한다.
+   ① 테마가 '시스템'(data-theme 없음)이고 OS가 다크 모드일 때 ② 사용자가 다크를 직접 고른 경우 */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --bg: #0b1320;
     --surface: #111b2a;
     --surface-2: #182536;
@@ -62,6 +64,34 @@
     --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 24px rgb(0 0 0 / 28%);
     color-scheme: dark;
   }
+}
+
+:root[data-theme='dark'] {
+  --bg: #0b1320;
+  --surface: #111b2a;
+  --surface-2: #182536;
+  --border: #243349;
+  --text: #e6edf6;
+  --text-2: #afbccc;
+  --text-3: #8b99ad;
+  --primary: #2372d8;
+  --primary-hover: #3a84e4;
+  --primary-soft: #15304f;
+  --primary-text: #82b9f7;
+  --purple: #c4a1f5;
+  --success: #5ee08f;
+  --success-soft: #11321f;
+  --warning: #f7cf5e;
+  --warning-soft: #30260c;
+  --warning-border: #5a4715;
+  --danger: #fb8c8c;
+  --danger-soft: #3a1618;
+  --code-bg: #07101b;
+  --code-toolbar: #0e1a2b;
+  --inline-code-bg: #1b2a3e;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 24px rgb(0 0 0 / 28%);
+  color-scheme: dark;
 }
 
 /* ───────── 기본 ───────── */
@@ -245,6 +275,12 @@ h3 {
 .btn-lg {
   padding: 13px 22px;
   font-size: 16px;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
 }
 
 .btn-block {

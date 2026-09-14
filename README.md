@@ -6,6 +6,7 @@
 - **퀴즈**: 레슨마다 2~3문항. 서버에서 채점하므로 정답이 브라우저로 전달되지 않음
 - **인증**: 이메일·비밀번호 로그인과 회원가입(Supabase Auth, SSR 쿠키 세션)
 - **진도 관리**: 퀴즈 통과 후 레슨 완료 처리, 대시보드에서 전체·과정별 진행률 확인
+- **테마**: 시스템·라이트·다크 모드 전환. 선택값은 쿠키에 저장되어 새로고침해도 유지됨
 
 ---
 
@@ -35,8 +36,8 @@ flutter-edu-site/
 └── src/
     ├── proxy.js                 # Next 16 Proxy(구 middleware): 세션 갱신, /dashboard 보호
     ├── app/
-    │   ├── layout.jsx           # 공통 레이아웃(내비게이션 바, 푸터)
-    │   ├── globals.css          # 전역 스타일(라이트·다크 모드)
+    │   ├── layout.jsx           # 공통 레이아웃(내비게이션 바, 푸터, 테마 쿠키 반영)
+    │   ├── globals.css          # 전역 스타일(라이트·다크 테마 토큰)
     │   ├── page.jsx             # 홈: 소개 + 커리큘럼
     │   ├── login/               # 로그인·회원가입 페이지와 서버 액션
     │   ├── auth/
@@ -49,7 +50,7 @@ flutter-edu-site/
     │       └── [courseId]/
     │           ├── page.jsx     # 과정 상세(레슨 목록)
     │           └── [lessonId]/page.jsx   # 레슨 본문 + 퀴즈
-    ├── components/              # Navbar, CourseCard, LessonContent, LessonQuiz, CodeBlock 등
+    ├── components/              # Navbar, ThemeToggle, CourseCard, LessonContent, LessonQuiz, CodeBlock 등
     ├── content/
     │   ├── curriculum.js        # 과정·레슨 메타데이터와 퀴즈(정답 포함, 서버 전용)
     │   └── lessons/<과정 id>/<레슨 id>.md   # 레슨 본문
@@ -58,6 +59,7 @@ flutter-edu-site/
         ├── supabase/proxy.js    # Proxy용 세션 갱신 로직
         ├── content.js           # 커리큘럼 조회 헬퍼
         ├── progress.js          # 진도 조회·요약 헬퍼
+        ├── theme.js             # 테마 쿠키 이름과 값 해석
         └── env.js · format.js · redirect.js
 ```
 
@@ -137,6 +139,13 @@ npm run lint    # ESLint 검사
 | `created_at`, `updated_at` | timestamptz | 생성·수정 시각(트리거로 자동 갱신) |
 
 `(user_id, course_id, lesson_id)`에 유니크 제약이 있습니다.
+
+### 테마 전환
+
+1. 내비게이션 바의 테마 버튼(`ThemeToggle`)을 누르면 **시스템 → 라이트 → 다크** 순서로 바뀝니다.
+2. 선택값은 `theme` 쿠키(1년 유지)에 저장하고 `<html data-theme>`을 즉시 바꿉니다. 시스템을 고르면 쿠키를 지웁니다.
+3. `layout.jsx`가 요청마다 쿠키를 읽어 `data-theme`을 서버에서 렌더링하므로, 새로고침해도 다른 테마가 잠깐 보이는 깜빡임이 없습니다.
+4. `data-theme`이 없으면 `globals.css`의 `prefers-color-scheme` 미디어 쿼리가 OS 설정을 따릅니다.
 
 ---
 

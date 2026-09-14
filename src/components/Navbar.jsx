@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { signOut } from '@/app/auth/actions';
 import Logo from '@/components/Logo';
+import ThemeToggle from '@/components/ThemeToggle';
 import { getSession } from '@/lib/supabase/server';
 
-export default async function Navbar() {
+export default async function Navbar({ theme }) {
   const { user } = await getSession();
 
   return (
@@ -17,6 +18,7 @@ export default async function Navbar() {
           <Link href="/#curriculum" className="nav-link nav-link-optional">
             커리큘럼
           </Link>
+          <ThemeToggle initialTheme={theme} />
           {user ? (
             <>
               <Link href="/dashboard" className="nav-link">
